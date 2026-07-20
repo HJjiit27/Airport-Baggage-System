@@ -1,0 +1,161 @@
+.navbar{
+
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 16px 70px;
+
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+
+    box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+
+}
+
+.logo{
+
+    display: flex;
+    align-items: center;
+
+}
+
+.logo-img{
+
+    width: 170px;
+    height: auto;
+
+}
+
+.nav-links{
+
+    display: flex;
+    align-items: center;
+    gap: 35px;
+
+    list-style: none;
+
+}
+
+.nav-links li{
+
+    position: relative;
+
+}
+
+.nav-links a{
+
+    text-decoration: none;
+
+    color: #0B3D91;
+
+    font-size: 17px;
+
+    font-weight: 600;
+
+    transition: .3s;
+
+    padding: 8px 0;
+
+}
+
+/* Hover Effect */
+
+.nav-links a::after{
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    bottom: -5px;
+
+    width: 0;
+
+    height: 3px;
+
+    background: #0ea5e9;
+
+    border-radius: 10px;
+
+    transition: .3s;
+
+}
+
+.nav-links a:hover::after{
+
+    width: 100%;
+
+}
+
+.nav-links a:hover{
+
+    color: #0ea5e9;
+
+}
+
+/* Active Route */
+
+.nav-links a.active{
+
+    color: #0ea5e9;
+
+}
+
+.nav-links a.active::after{
+
+    width: 100%;
+
+}
+
+@media(max-width:900px){
+
+.navbar{
+
+    flex-direction: column;
+
+    gap: 20px;
+
+    padding: 20px;
+
+}
+
+.nav-links{
+
+    flex-wrap: wrap;
+
+    justify-content: center;
+
+    gap: 20px;
+
+}
+
+.logo-img{
+
+    width: 150px;
+
+}
+
+}
+
+@media(max-width:600px){
+
+.nav-links{
+
+    flex-direction: column;
+
+    gap: 15px;
+
+}
+
+.logo-img{
+
+    width: 130px;
+
+}
+
+}

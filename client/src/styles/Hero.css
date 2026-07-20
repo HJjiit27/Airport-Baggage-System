@@ -1,0 +1,188 @@
+.hero{
+
+    min-height:90vh;
+
+    background-image:url("../assets/images/Hero bg.png");
+
+    background-size:cover;
+
+    background-position:center;
+
+    background-repeat:no-repeat;
+
+    display:flex;
+
+    align-items:center;
+
+}
+
+.hero-overlay{
+
+    width:100%;
+    min-height:90vh;
+
+    background:linear-gradient(
+        90deg,
+        rgba(7,18,38,0.92) 0%,
+        rgba(15,35,72,0.78) 42%,
+        rgba(15,35,72,0.35) 70%,
+        rgba(15,35,72,0.08) 100%
+    );
+
+    display:flex;
+    align-items:center;
+
+}
+
+.hero-content{
+
+    width:50%;
+    margin-left:80px;
+    color:white;
+
+}
+
+.hero-content h1{
+
+    font-size:62px;
+    line-height:1.15;
+    margin-bottom:25px;
+    font-weight:700;
+    color:white;
+
+}
+
+.hero-content p{
+
+    font-size:20px;
+    line-height:1.8;
+    color:#d6e4f0;
+    margin-bottom:40px;
+
+}
+
+.hero-buttons{
+
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+
+}
+
+.primary-btn{
+
+    padding:16px 34px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+
+    background:#0ea5e9;
+    color:white;
+
+    font-size:17px;
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+.primary-btn:hover{
+
+    transform:translateY(-3px);
+
+    background:#0284c7;
+
+    box-shadow:0 10px 25px rgba(14,165,233,.35);
+
+}
+
+.secondary-btn{
+
+    padding:16px 34px;
+
+    border:2px solid white;
+
+    background:transparent;
+
+    color:white;
+
+    font-size:17px;
+
+    font-weight:600;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.secondary-btn:hover{
+
+    background:white;
+
+    color:#0B3D91;
+
+    transform:translateY(-3px);
+
+}
+
+@media(max-width:992px){
+
+.hero-content{
+
+    width:70%;
+    margin-left:40px;
+
+}
+
+.hero-content h1{
+
+    font-size:46px;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.hero{
+
+    min-height:auto;
+
+}
+
+.hero-overlay{
+
+    padding:80px 25px;
+
+}
+
+.hero-content{
+
+    width:100%;
+    margin:0;
+    text-align:center;
+
+}
+
+.hero-content h1{
+
+    font-size:36px;
+
+}
+
+.hero-content p{
+
+    font-size:18px;
+
+}
+
+.hero-buttons{
+
+    justify-content:center;
+
+}
+
+}
