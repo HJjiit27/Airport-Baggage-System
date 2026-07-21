@@ -2,40 +2,39 @@ const { getChannel } = require("../rabbitmq/rabbitmq");
 const db = require("../configure/database");
 const { getIO } = require("../socket");
 
-async function startLoadingConsumers() {
+async function startLoadingConsumer() {
 
     const channel = getChannel();
 
-    await channel.assertQueue("loading_queue", {
+    const queue = "loading_queue";
+
+    await channel.assertQueue(queue, {
         durable: true
     });
 
     console.log("✈️ Loading Consumer Started...");
 
-    channel.consume("loading_queue", (msg) => {
+    channel.consume(queue, (msg) => {
 
         if (!msg) return;
 
-        const data = JSON.parse(msg.content.toString());
+        const bag = JSON.parse(msg.content.toString());
 
-        console.log("================================");
-        console.log("✈️ LOADING STARTED");
-        console.log(data);
-        console.log("================================");
+        console.log("✈️ Aircraft Loading Started");
+        console.log(bag.bagId);
 
         setTimeout(() => {
 
             const activitySql = `
                 INSERT INTO activity_logs
-                (bag_id, flight_no, activity)
-                VALUES (?, ?, ?)
+                (bag_id, activity)
+                VALUES (?, ?)
             `;
 
             db.query(
                 activitySql,
                 [
-                    data.bagId,
-                    data.flight_no,
+                    bag.bagId,
                     "Aircraft Loaded"
                 ],
                 (err) => {
@@ -47,10 +46,9 @@ async function startLoadingConsumers() {
 
                         channel.ack(msg);
                         return;
-
                     }
 
-                    console.log("✅ Loading Activity Saved");
+                    console.log("✅ Aircraft Loaded Activity Saved");
 
                     const updateSql = `
                         UPDATE baggage_records
@@ -62,7 +60,7 @@ async function startLoadingConsumers() {
                         updateSql,
                         [
                             "Aircraft Loaded",
-                            data.bagId
+                            bag.bagId
                         ],
                         (err) => {
 
@@ -82,11 +80,7 @@ async function startLoadingConsumers() {
 
                             console.log("📡 Dashboard Updated");
 
-                            // ✅ IMPORTANT
                             channel.ack(msg);
-
-                            console.log("✅ Aircraft Loading Completed");
-                            console.log(data.bagId);
 
                         }
                     );
@@ -100,4 +94,4 @@ async function startLoadingConsumers() {
 
 }
 
-module.exports = startLoadingConsumers;
+module.exports = startLoadingConsumer;

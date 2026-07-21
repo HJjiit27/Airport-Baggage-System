@@ -189,10 +189,9 @@ function Tracking() {
                     </span>
                   </h3>
 
-                  <p>
-                    {new Date(item.activity_time).toLocaleString()}
-                  </p>
-
+                <p>
+  {new Date(item.timestamp).toLocaleString()}
+</p>
                   <span className="badge">
                     Completed
                   </span>

@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
 import CheckIn from "./pages/CheckIn";
-import CheckOut from "./pages/CheckOut";
+import Checkout from "./pages/Checkout";
 import Records from "./pages/Records";
 import Tracking from "./pages/Tracking";
 
@@ -18,7 +18,7 @@ function App() {
 
         <Route path="/checkin" element={<CheckIn />} />
 
-        <Route path="/checkout/:bagId" element={<CheckOut />} />
+        <Route path="/checkout/:bagId" element={<Checkout />} />
 
         <Route path="/records" element={<Records />} />
 

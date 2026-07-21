@@ -1,20 +1,45 @@
-version: "3.9"
-
 services:
+  mysql:
+    image: mysql:8.0
+    container_name: baggage-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ""
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: airport_baggage_db
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
   backend:
     build: ./server
     container_name: baggage-backend
-    ports:
-      - "5000:5000"
+    depends_on:
+      - mysql
+      - rabbitmq
     env_file:
       - ./server/.env
+    ports:
+      - "5000:5000"
     restart: unless-stopped
 
   frontend:
     build: ./client
     container_name: baggage-frontend
-    ports:
-      - "5173:5173"
     depends_on:
       - backend
+    ports:
+      - "5173:5173"
     restart: unless-stopped
+
+volumes:
+  mysql_data:

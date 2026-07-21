@@ -29,14 +29,15 @@ const getBagTimeline = (req, res) => {
 
         if (bagErr) {
 
-            console.log(bagErr);
+    console.log("Tracking SQL Error:", bagErr);
 
-            return res.status(500).json({
-                success: false,
-                message: "Database Error"
-            });
+    return res.status(500).json({
+        success: false,
+        code: bagErr.code,
+        error: bagErr.sqlMessage
+    });
 
-        }
+}
 
         if (bagResult.length === 0) {
 
@@ -47,14 +48,14 @@ const getBagTimeline = (req, res) => {
 
         }
 
-        const timelineSql = `
-            SELECT
-                activity,
-                activity_time
-            FROM activity_logs
-            WHERE bag_id = ?
-            ORDER BY activity_time ASC
-        `;
+       const timelineSql = `
+    SELECT
+        activity,
+        timestamp
+    FROM activity_logs
+    WHERE bag_id = ?
+    ORDER BY timestamp ASC
+`;
 
         db.query(timelineSql, [bagId], (timelineErr, timelineResult) => {
 
@@ -68,7 +69,7 @@ const getBagTimeline = (req, res) => {
                 });
 
             }
-
+console.log("Timeline Data:", timelineResult);
             return res.json({
 
                 success: true,

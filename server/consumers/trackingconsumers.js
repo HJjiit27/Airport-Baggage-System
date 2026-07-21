@@ -1,110 +1,74 @@
-const { getIO } = require("../socket");
 const { getChannel } = require("../rabbitmq/rabbitmq");
 const db = require("../configure/database");
+const { getIO } = require("../socket");
 
 async function startTrackingConsumer() {
-
     const channel = getChannel();
 
-    await channel.assertQueue("tracking_queue", {
+    const queue = "tracking_queue";
+
+    await channel.assertQueue(queue, {
         durable: true
     });
 
     console.log("🎧 Tracking Consumer Started...");
 
-    channel.consume("tracking_queue", (msg) => {
+    channel.consume(queue, (msg) => {
 
         if (!msg) return;
 
-        const data = JSON.parse(msg.content.toString());
+        const bag = JSON.parse(msg.content.toString());
 
-        console.log("📥 Tracking Received:", data);
+
+        console.log("📥 Tracking Received:", bag);
 
         const activitySql = `
             INSERT INTO activity_logs
-            (bag_id, flight_no, activity)
-            VALUES (?, ?, ?)
+            (bag_id, activity)
+            VALUES (?, ?)
         `;
 
         db.query(
             activitySql,
             [
-                data.bagId,
-                data.flight_no,
-                data.status
+                bag.bagId,
+                "Checked In"
             ],
             (err) => {
 
                 if (err) {
-
                     console.log("❌ Activity Log Error");
                     console.log(err);
 
                     channel.ack(msg);
                     return;
-
                 }
 
-                console.log("✅ Activity Saved");
+                console.log("✅ Checked In Activity Saved");
+                
 
-                const updateSql = `
-                    UPDATE baggage_records
-                    SET bag_status = ?
-                    WHERE bag_id = ?
-                `;
+channel.publish(
+    "airport_exchange",
+    "bag.tracked",
+    Buffer.from(JSON.stringify(bag)),
+    {
+        persistent: true 
+    }
+);                                                             
+ 
 
-                db.query(
-                    updateSql,
-                    [
-                        "Tracking Completed",
-                        data.bagId
-                    ],
-                    (err) => {
+console.log("📤 bag.tracked Published");
 
-                        if (err) {
+                getIO().emit("dashboard-update");
+                getIO().emit("activity-update");
 
-                            console.log("❌ Status Update Error");
-                            console.log(err);
-
-                        } else {
-
-                            console.log("✅ Bag Status Updated : Tracking Completed");
-
-                        }
-
-                        getIO().emit("dashboard-update");
-                        getIO().emit("activity-update");
-
-                        console.log("📡 Dashboard Event Sent");
-
-                        const trackedEvent = {
-                            bagId: data.bagId,
-                            flight_no: data.flight_no,
-                            status: "Tracking Completed",
-                            timestamp: new Date().toISOString()
-                        };
-
-                        channel.publish(
-                            "airport_exchange",
-                            "bag.tracked",
-                            Buffer.from(JSON.stringify(trackedEvent)),
-                            {
-                                persistent: true
-                            }
-                        );
-
-                        console.log("📤 bag.tracked Published");
-
-                        channel.ack(msg);
-
-                    }
-                );
+                channel.ack(msg);
 
             }
         );
 
     });
-
 }
 
 module.exports = startTrackingConsumer;
+

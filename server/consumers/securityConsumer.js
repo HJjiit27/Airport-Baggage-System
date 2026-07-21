@@ -23,20 +23,18 @@ async function startSecurityConsumer() {
         console.log("🛡 Security Scan Started");
         console.log(bag.bagId);
 
-        // Security pehle complete hogi
         setTimeout(() => {
 
             const activitySql = `
                 INSERT INTO activity_logs
-                (bag_id, flight_no, activity)
-                VALUES (?, ?, ?)
+                (bag_id, activity)
+                VALUES (?, ?)
             `;
 
             db.query(
                 activitySql,
                 [
                     bag.bagId,
-                    bag.flight_no,
                     "Security Cleared"
                 ],
                 (err) => {
@@ -48,7 +46,6 @@ async function startSecurityConsumer() {
 
                         channel.ack(msg);
                         return;
-
                     }
 
                     console.log("✅ Security Activity Saved");
@@ -83,7 +80,6 @@ async function startSecurityConsumer() {
 
                             console.log("📡 Dashboard Updated");
 
-                            // ✅ IMPORTANT
                             channel.ack(msg);
 
                         }
